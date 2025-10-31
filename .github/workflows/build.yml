@@ -6,23 +6,29 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
+      # 1️⃣ Clonar el repositorio
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Configurar Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
+      # 3️⃣ Instalar dependencias
       - name: Install dependencies
         run: |
-          pip install pandas pyinstaller
+          pip install pandas pyinstaller XlsxWriter
 
+      # 4️⃣ Generar el .exe
       - name: Build EXE
         run: |
           pyinstaller --onefile --noconsole redondear_csv.py
 
+      # 5️⃣ Subir el .exe como artifact
       - name: Upload artifact (EXE)
         uses: actions/upload-artifact@v4
         with:
