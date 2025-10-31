@@ -11,7 +11,7 @@ archivo = askopenfilename(filetypes=[("CSV files", "*.csv")], title="Selecciona 
 if not archivo:
     exit()  # salir si no seleccionó ningún archivo
 
-# Leer CSV (decimal con coma)
+# Leer CSV
 df = pd.read_csv(archivo, decimal=',')  # separador por defecto ','
 
 # Redondear columnas numéricas
@@ -25,9 +25,15 @@ columnas_existentes = [c for c in columnas_deseadas if c in df.columns]
 # Seleccionar solo las columnas existentes
 df = df[columnas_existentes]
 
-# Guardar CSV limpio en la misma carpeta que el original
-nombre_salida = os.path.splitext(archivo)[0] + '_limpio.csv'
-df.to_csv(nombre_salida, index=False, decimal=',')  # separador por defecto ','
+# Guardar a Excel
+nombre_salida = os.path.splitext(archivo)[0] + '_limpio.xlsx'
 
-# Mensaje final
-print(f"✅ Archivo creado correctamente: {nombre_salida}")
+with pd.ExcelWriter(nombre_salida, engine='xlsxwriter') as writer:
+    df.to_excel(writer, index=False, sheet_name='Datos')
+    
+    # Formatear como tabla
+    workbook  = writer.book
+    worksheet = writer.sheets['Datos']
+    worksheet.add_table(0, 0, len(df), len(df.columns)-1, {'name': 'TablaDatos', 'columns': [{'header': c} for c in df.columns]})
+
+print(f"✅ Archivo Excel creado correctamente: {nombre_salida}")
