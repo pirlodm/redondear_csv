@@ -40,3 +40,7 @@ with pd.ExcelWriter(nombre_salida, engine='xlsxwriter') as writer:
                         {'name': 'TablaDatos', 'columns': [{'header': c} for c in df.columns]})
 
 print(f"✅ Archivo Excel creado correctamente: {nombre_salida}")
+
+# Eliminar archivo CSV original
+os.remove(archivo)
+print(f"🗑️ Archivo CSV original eliminado: {archivo}")
